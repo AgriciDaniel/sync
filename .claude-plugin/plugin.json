@@ -1,0 +1,22 @@
+{
+  "name": "sync",
+  "version": "0.1.0",
+  "description": "Sync: Claude and Codex council orchestration. Routes work by role across declared pools, requires current headroom before any capacity claim, coordinates through run directories, gates on executed commands, and evolves policy from recorded outcomes.",
+  "author": {
+    "name": "Daniel Agrici",
+    "url": "https://github.com/AgriciDaniel"
+  },
+  "homepage": "https://github.com/AgriciDaniel/sync",
+  "repository": "https://github.com/AgriciDaniel/sync",
+  "license": "Proprietary",
+  "keywords": [
+    "sync-brain",
+    "obsidian",
+    "brain",
+    "sync"
+  ],
+  "skills": [
+    "./skills/sync/SKILL.md",
+    "./SKILL.md"
+  ]
+}

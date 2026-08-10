@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">Sync, Claude and Codex working through one evidence loop</title>
+  <desc id="desc">A sparse dark diagram showing Claude and Codex as two friendly agents connected through a shared run directory, an executed gate, and a recorded outcome.</desc>
+  <rect width="1200" height="520" rx="28" fill="#0b0b0c"/>
+  <rect x="24" y="24" width="1152" height="472" rx="22" fill="none" stroke="#2a2a2e"/>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace">
+    <text x="64" y="80" fill="#f2eee7" font-size="21" font-weight="700" letter-spacing="8">SYNC</text>
+    <text x="64" y="116" fill="#8d8d95" font-size="15">two agents. one filesystem. ground truth wins.</text>
+
+    <line x1="256" y1="246" x2="472" y2="246" stroke="#e86e3a" stroke-width="2"/>
+    <line x1="728" y1="246" x2="944" y2="246" stroke="#5a7dff" stroke-width="2"/>
+    <line x1="600" y1="310" x2="600" y2="374" stroke="#f2eee7" stroke-width="2"/>
+
+    <g transform="translate(178 246)">
+      <circle r="78" fill="#161617" stroke="#e86e3a" stroke-width="2"/>
+      <circle r="35" fill="none" stroke="#f2eee7" stroke-width="2"/>
+      <path d="M0-22V22M-22 0H22M-15-15L15 15M15-15L-15 15" stroke="#e86e3a" stroke-width="3" stroke-linecap="round"/>
+      <text x="0" y="106" fill="#f2eee7" text-anchor="middle" font-size="16" font-weight="700">CLAUDE</text>
+      <text x="0" y="128" fill="#8d8d95" text-anchor="middle" font-size="12">specify / orchestrate / review</text>
+    </g>
+
+    <g transform="translate(1022 246)">
+      <circle r="78" fill="#161617" stroke="#5a7dff" stroke-width="2"/>
+      <circle r="35" fill="none" stroke="#f2eee7" stroke-width="2"/>
+      <path d="M-7-16L-24 0L-7 16M7-16L24 0L7 16" fill="none" stroke="#5a7dff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="0" y="106" fill="#f2eee7" text-anchor="middle" font-size="16" font-weight="700">CODEX</text>
+      <text x="0" y="128" fill="#8d8d95" text-anchor="middle" font-size="12">implement / bulk</text>
+    </g>
+
+    <g transform="translate(472 168)">
+      <rect width="256" height="142" rx="16" fill="#161617" stroke="#4a4a50"/>
+      <circle cx="22" cy="22" r="4" fill="#e86e3a"/>
+      <circle cx="36" cy="22" r="4" fill="#9fc56a"/>
+      <circle cx="50" cy="22" r="4" fill="#5a7dff"/>
+      <text x="20" y="54" fill="#f2eee7" font-size="15" font-weight="700">run/</text>
+      <text x="40" y="79" fill="#8d8d95" font-size="13">BRIEF.md</text>
+      <text x="40" y="99" fill="#8d8d95" font-size="13">ROUTE.json</text>
+      <text x="40" y="119" fill="#8d8d95" font-size="13">RESULT.json</text>
+      <text x="150" y="79" fill="#8d8d95" font-size="13">EVIDENCE/</text>
+      <text x="150" y="99" fill="#9fc56a" font-size="13">VERDICT.json</text>
+      <text x="150" y="119" fill="#8d8d95" font-size="13">OUTCOME.json</text>
+    </g>
+
+    <g transform="translate(440 374)">
+      <rect width="320" height="62" rx="31" fill="#f2eee7"/>
+      <circle cx="36" cy="31" r="14" fill="#9fc56a"/>
+      <path d="M29 31L34 36L44 25" fill="none" stroke="#0b0b0c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="64" y="28" fill="#0b0b0c" font-size="13" font-weight="700">EXECUTED GATE</text>
+      <text x="64" y="46" fill="#55555c" font-size="11">model claims stop here</text>
+    </g>
+
+    <text x="600" y="474" fill="#686870" font-size="11" text-anchor="middle" letter-spacing="2">CLAIM  →  COMMAND  →  VERDICT  →  MEMORY</text>
+  </g>
+</svg>

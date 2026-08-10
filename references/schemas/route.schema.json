@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sync.local/schemas/route.schema.json",
+  "title": "Sync resolved route",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version", "run_id", "project", "role", "harness", "model", "effort",
+    "source_pool", "source_pool_reference", "pool", "pool_reference",
+    "capacity_status", "policy_fingerprint", "resolved_at", "triggers_fired"
+  ],
+  "properties": {
+    "version": {"const": 2},
+    "run_id": {"type": "string", "minLength": 1},
+    "project": {"type": "string", "minLength": 1},
+    "role": {"type": "string", "minLength": 1},
+    "harness": {"type": "string", "minLength": 1},
+    "model": {"type": "string", "minLength": 1},
+    "effort": {"type": "string", "minLength": 1},
+    "source_pool": {"type": ["string", "null"]},
+    "source_pool_reference": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "pool": {"type": "string", "minLength": 1},
+    "pool_reference": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "capacity_status": {"enum": ["not-claimed", "same-pool", "headroom-unverified", "eligible"]},
+    "policy_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "resolved_at": {"type": "string", "minLength": 1},
+    "triggers_fired": {"type": "array", "items": {"type": "string"}}
+  }
+}

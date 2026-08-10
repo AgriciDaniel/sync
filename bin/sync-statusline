@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+# Sync statusline: the only live view of how close the Claude pool is to blocked.
+#
+# Reads the statusline JSON contract on stdin:
+#   https://code.claude.com/docs/en/statusline
+#
+# rate_limits appears ONLY for Pro/Max subscribers, ONLY after the first API
+# response in a session, and either window may be independently absent. Every
+# field is read with `// empty` so a missing field degrades quietly rather than
+# printing an error into the user's prompt line.
+#
+# Renders on every turn, so it does no work that could block: no network, no
+# subprocess beyond jq, no file reads outside SYNC_HOME.
+set -uo pipefail
+
+IN="$(cat)"
+
+if ! command -v jq >/dev/null 2>&1; then
+  printf 'sync: jq not installed'
+  exit 0
+fi
+
+j() { printf '%s' "$IN" | jq -r "$1 // empty" 2>/dev/null; }
+
+DIR="$(j '.workspace.current_dir' | xargs -r basename)"
+MODEL="$(j '.model.display_name')"
+CTX="$(j '.context_window.used_percentage')"
+H5="$(j '.rate_limits.five_hour.used_percentage')"
+D7="$(j '.rate_limits.seven_day.used_percentage')"
+H5_R="$(j '.rate_limits.five_hour.resets_at')"
+D7_R="$(j '.rate_limits.seven_day.resets_at')"
+
+DIM=$'\033[2m'; RST=$'\033[0m'
+GRN=$'\033[32m'; YLW=$'\033[33m'; RED=$'\033[31m'; CYN=$'\033[36m'; MAG=$'\033[35m'
+
+# Green under 60, yellow under 85, red above. The thresholds matter more than
+# the exact number: 85 is where you start planning around the wall.
+colour_for() {
+  local pct="${1%%.*}"
+  [[ -z "$pct" ]] && { printf '%s' "$DIM"; return; }
+  if   (( pct >= 85 )); then printf '%s' "$RED"
+  elif (( pct >= 60 )); then printf '%s' "$YLW"
+  else                       printf '%s' "$GRN"
+  fi
+}
+
+until_reset() {
+  local target="${1%%.*}"
+  [[ -z "$target" ]] && return
+  local now diff h m
+  now=$(date +%s)
+  diff=$(( target - now ))
+  (( diff <= 0 )) && { printf 'now'; return; }
+  h=$(( diff / 3600 )); m=$(( (diff % 3600) / 60 ))
+  if (( h > 0 )); then printf '%dh%02dm' "$h" "$m"; else printf '%dm' "$m"; fi
+}
+
+OUT="${CYN}${DIR:-?}${RST}"
+[[ -n "$MODEL" ]] && OUT+=" ${DIM}|${RST} ${MODEL}"
+
+if [[ -n "$CTX" ]]; then
+  OUT+=" ${DIM}|${RST} $(colour_for "$CTX")ctx ${CTX%%.*}%${RST}"
+fi
+
+if [[ -n "$H5" ]]; then
+  OUT+=" ${DIM}|${RST} $(colour_for "$H5")5h ${H5%%.*}%${RST}"
+  R="$(until_reset "$H5_R")"; [[ -n "$R" ]] && OUT+="${DIM}(${R})${RST}"
+fi
+
+if [[ -n "$D7" ]]; then
+  OUT+=" ${DIM}|${RST} $(colour_for "$D7")7d ${D7%%.*}%${RST}"
+  R="$(until_reset "$D7_R")"; [[ -n "$R" ]] && OUT+="${DIM}(${R})${RST}"
+fi
+
+if [[ -z "$H5" && -z "$D7" ]]; then
+  OUT+=" ${DIM}| quota n/a until first response${RST}"
+fi
+
+# When the Claude pool is under pressure, prompt a route eligibility check.
+# Headroom in another declared pool is not inferred from a product name.
+if [[ -n "$D7" ]] && (( ${D7%%.*} >= 75 )); then
+  OUT+=" ${MAG}| verify sync route${RST}"
+elif [[ -n "$H5" ]] && (( ${H5%%.*} >= 85 )); then
+  OUT+=" ${MAG}| verify sync route${RST}"
+fi
+
+# An open Sync run is worth seeing: it means work is mid-flight with a brief.
+SYNC_HOME="${SYNC_HOME:-$HOME/.sync}"
+if [[ -d "$SYNC_HOME/runs" ]]; then
+  OPEN="$(find "$SYNC_HOME/runs" -maxdepth 1 -mindepth 1 -type d \
+          '!' -exec test -e '{}/VERDICT.json' ';' -print 2>/dev/null | wc -l)"
+  (( OPEN > 0 )) && OUT+=" ${DIM}| ${OPEN} open run$( (( OPEN > 1 )) && printf s)${RST}"
+fi
+
+printf '%s' "$OUT"

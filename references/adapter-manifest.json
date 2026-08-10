@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "status": "domain-adapted",
+  "domain": "Claude and Codex council orchestration: task routing across billing pools, artifact-mediated coordination, ground-truth verification gates, quota and cost measurement, and policy evolution from recorded outcomes",
+  "generic_only": false,
+  "supported_input_types": [
+    "Fingerprint-bound Sync run directories containing meta, route, dispatch, verdict, and outcome artifacts"
+  ],
+  "planned_input_types": [
+    "Claude Code statusline JSON, OpenTelemetry metrics, and session transcripts supplied by the operator",
+    "Codex config.toml, rate-limit surfaces, and session exports supplied by the operator"
+  ],
+  "rules": {
+    "domain_adapted_requires": [
+      "one real domain importer or ingestion path",
+      "one domain-specific synthesis module",
+      "one report renderer",
+      "one fixture per supported input type",
+      "tests for importer, synthesis, rendering, malformed input, and missing credentials"
+    ]
+  },
+  "input_schemas": [
+    {
+      "name": "Sanitized fingerprint-verified Sync run",
+      "path": "references/schemas/sync-run-adapter.schema.json",
+      "schema_version": "sync-run-adapter/1"
+    }
+  ],
+  "importers": [
+    {
+      "name": "Sync run directory importer",
+      "path": "sync_brain/adapters/sync_run.py",
+      "entrypoint": "sync-brain import-run",
+      "credentials": "none",
+      "safety": "Rejects symlinks, oversized artifacts, malformed JSON, and broken route, dispatch, verdict, result, or outcome bindings"
+    }
+  ],
+  "synthesis_modules": [
+    {
+      "name": "Sync run fact normalizer",
+      "path": "sync_brain/adapters/sync_run.py",
+      "function": "load_run",
+      "excludes": "Raw project paths, model result prose, captured output tails, and credentials"
+    }
+  ],
+  "report_renderers": [
+    {
+      "name": "Sync run evidence report",
+      "path": "sync_brain/adapters/sync_run.py",
+      "function": "render_report",
+      "citations": "Normalized immutable .raw record plus SHA-256 for every source artifact"
+    }
+  ],
+  "fixtures": [
+    {
+      "name": "Successful fingerprint-bound Sync run",
+      "path": "tests/fixtures/sync-run/20260810120000000000-adapter-pass"
+    }
+  ],
+  "tests": [
+    {
+      "name": "Sync run adapter contract and safety tests",
+      "path": "tests/test_sync_run_adapter.py",
+      "covers": [
+        "valid import",
+        "schema validation",
+        "fingerprint tampering",
+        "malformed JSON",
+        "missing credentials",
+        "arbitrary output exclusion",
+        "immutable raw record"
+      ]
+    }
+  ]
+}

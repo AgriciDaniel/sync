@@ -1,0 +1,37 @@
+{
+  "schema": "sync-pool-inventory/1",
+  "updated": "2026-08-10",
+  "purpose": "Observed and documented pool identities used to decide whether a route can claim capacity relief. Product, model, client, and vendor names are not sufficient identities.",
+  "routing_rule": "A capacity route requires source and destination entries with distinct declared_pool_id values, current observed status, and documented surface evidence. Otherwise label the route as preference, quality, or cost only.",
+  "pools": {
+    "anthropic_primary": {
+      "routing_alias": "claude",
+      "declared_pool_id": "anthropic-first-party-subscription",
+      "identity_kind": "Anthropic account or workspace subscription",
+      "expected_auth_mode": "first-party-subscription",
+      "observed_status": "observed",
+      "documented_status": "Observed 2026-08-10: first-party claude.ai subscription authentication, Max plan. Claude surfaces share a usage limit when authenticated to the same applicable subscription.",
+      "source_ids": [
+        "claude-usage-length-limits",
+        "claude-code-pro-max-plan"
+      ],
+      "last_checked": "2026-08-10",
+      "headroom_status": "not recorded"
+    },
+    "openai_primary": {
+      "routing_alias": "codex",
+      "declared_pool_id": "openai-chatgpt-login",
+      "identity_kind": "OpenAI ChatGPT account or workspace agentic usage and credit pool",
+      "expected_auth_mode": "chatgpt-login",
+      "observed_status": "observed",
+      "documented_status": "Observed 2026-08-10: ChatGPT login authentication in Codex. Codex shares the applicable agentic usage and credit pool with ChatGPT Work, ChatGPT for Excel, and Workspace Agents where those features are available.",
+      "source_ids": [
+        "openai-codex-chatgpt-usage-limits",
+        "openai-codex-pricing"
+      ],
+      "last_checked": "2026-08-10",
+      "headroom_status": "not recorded"
+    }
+  },
+  "operator_action": "Recheck the non-secret local labels after an account, workspace, plan, or authentication change. Do not record credentials, account numbers, or tokens. Record current headroom before claiming a particular route provides cross-pool relief."
+}

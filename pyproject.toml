@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sync-brain"
+version = "0.1.0"
+description = "Sync Obsidian brain template and script layer."
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "Proprietary"}
+authors = [{name = "Daniel Agrici"}]
+dependencies = []
+
+[project.optional-dependencies]
+test = [
+  "detect-secrets>=1.5,<2",
+  "jsonschema>=4.23,<5",
+  "mypy>=1.17,<2",
+  "pytest>=8,<10",
+  "ruff>=0.12,<1",
+]
+
+[project.scripts]
+sync-brain = "sync_brain.cli:main"
+
+[tool.setuptools]
+packages = ["sync_brain", "sync_brain.adapters"]

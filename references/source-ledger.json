@@ -1,0 +1,435 @@
+{
+  "schema": "sync-source-ledger/1",
+  "updated": "2026-08-10",
+  "policy": {
+    "refresh_days": 30,
+    "second_source_required_for": [
+      "capacity",
+      "price",
+      "quota",
+      "benchmark",
+      "comparative"
+    ],
+    "note": "Prices, quotas, and model rosters move fastest and are the claims most likely to be wrong first. Benchmark leaderboards are rechecked every refresh because several are silently frozen."
+  },
+  "sources": [
+    {
+      "id": "metr-rct-2025",
+      "title": "Measuring the impact of early-2025 AI on experienced open-source developer productivity",
+      "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/",
+      "source_type": "primary",
+      "retrieved": "2026-08-07",
+      "refresh_due": "2026-09-06",
+      "confidence": "evidence-based",
+      "supports": [
+        "006-measure-or-you-will-believe-anything"
+      ],
+      "claims": [
+        "16 experienced developers, 246 real issues in their own repositories",
+        "Developers were 19% slower with AI tools while expecting a 24% speedup",
+        "After the study they still believed they had been sped up 20%"
+      ],
+      "does_not_prove": "One trial, one population, one tool generation, on repositories the participants knew well. Establishes that expert perception is unreliable in that setting, not that the tools fail to help."
+    },
+    {
+      "id": "self-repair-silver-bullet",
+      "title": "Is Self-Repair a Silver Bullet for Code Generation?",
+      "url": "https://arxiv.org/abs/2306.09896",
+      "source_type": "primary",
+      "retrieved": "2026-08-07",
+      "refresh_due": "2026-09-06",
+      "confidence": "evidence-based",
+      "supports": [
+        "003-a-verdict-is-a-command-not-a-claim"
+      ],
+      "claims": [
+        "Self-repair on the model's own feedback succeeded 33.30%",
+        "With real external feedback the same setup reached 52.60%"
+      ],
+      "does_not_prove": "Measured on a specific model generation and benchmark. The direction is the durable finding, not the exact gap."
+    },
+    {
+      "id": "swe-bench-verified",
+      "title": "Introducing SWE-bench Verified",
+      "url": "https://openai.com/index/introducing-swe-bench-verified/",
+      "source_type": "official",
+      "retrieved": "2026-08-07",
+      "refresh_due": "2026-09-06",
+      "confidence": "practitioner",
+      "supports": [
+        "004-escalation-is-an-observation"
+      ],
+      "claims": [
+        "Filtering underspecified samples moved GPT-4o with an unchanged scaffold from 16% to 33.2%",
+        "38.3% of the original samples were judged underspecified"
+      ],
+      "does_not_prove": "Specification quality mattering on this benchmark does not establish the size of the effect on a given operator's real codebase.",
+      "verification_status": "URL is the official announcement but returns HTTP 403 to automated fetch, so its content could not be read here on 2026-08-09. The figures below are inherited from a secondary note and are NOT independently verified. Read the page in a browser before relying on them."
+    },
+    {
+      "id": "spec-quality-cost",
+      "title": "Ask or Assume? Uncertainty-Aware Clarification-Seeking in Coding Agents",
+      "url": "https://arxiv.org/abs/2603.26233",
+      "source_type": "primary",
+      "retrieved": "2026-08-07",
+      "refresh_due": "2026-09-06",
+      "confidence": "contested",
+      "supports": [
+        "004-escalation-is-an-observation"
+      ],
+      "claims": [
+        "An uncertainty-aware multi-agent scaffold reached a 69.40% task resolve rate on an underspecified variant of SWE-bench Verified, closing much of the gap with agents given fully specified instructions (abstract, verified)"
+      ],
+      "does_not_prove": "The paper argues coding agents should ask clarifying questions when instructions are underspecified. Using it to argue that a human should always pre-write the spec instead runs against its framing, and that reading was mine, not the authors'.",
+      "verification_status": "abstract read 2026-08-09. The paper studies underspecified SWE-bench Verified and clarification-seeking. The figures previously recorded here (54.80% against 70.80%, $1.63 against $3.50 per task) do NOT appear in the abstract and were inherited from a secondary note without checking. They are demoted below and must not be cited until someone reads the full paper.",
+      "demoted_unverified_claims": [
+        "Same model scored 54.80% underspecified against 70.80% fully specified (not in abstract, source unknown)",
+        "Writing the spec cost $1.63 per task against $3.50 for agent-extracted requirements (not in abstract, source unknown)"
+      ]
+    },
+    {
+      "id": "spec-detail-diminishing",
+      "title": "RobuNFR: Evaluating the Robustness of Large Language Models on Non-Functional Requirements Aware Code Generation",
+      "url": "https://arxiv.org/abs/2503.22851",
+      "source_type": "primary",
+      "retrieved": "2026-08-07",
+      "refresh_due": "2026-09-06",
+      "confidence": "evidence-based",
+      "supports": [
+        "004-escalation-is-an-observation"
+      ],
+      "claims": [
+        "Including non-functional requirements decreased Pass@1 by up to 39 percent and raised standard deviation from 0.48 to 2.48 against a function-only baseline (abstract, verified verbatim)"
+      ],
+      "does_not_prove": "Measures robustness to NFR phrasing variation, not a general curve of specification detail against success. It does not establish that more detail is harmful past some optimum.",
+      "verification_status": "abstract read 2026-08-09. The 39% figure is confirmed verbatim. The HumanEval 0.921 to 0.860 figure is NOT in this paper, which is about NFR robustness rather than specification-detail gradients. It has been removed rather than re-attributed, because its real source is unknown."
+    },
+    {
+      "id": "swe-bench-pro-files",
+      "title": "SWE-Bench Pro: Can AI Agents Solve Long-Horizon Software Engineering Tasks?",
+      "url": "https://arxiv.org/abs/2509.16941",
+      "source_type": "primary",
+      "retrieved": "2026-08-07",
+      "refresh_due": "2026-09-06",
+      "confidence": "evidence-based",
+      "supports": [
+        "004-escalation-is-an-observation"
+      ],
+      "claims": [
+        "The frontier gap widens dramatically beyond 3 files",
+        "Open models approach near-zero performance at 10 or more files"
+      ],
+      "does_not_prove": "Three files is where the gap was observed to widen on this benchmark, not a constant that transfers unchanged."
+    },
+    {
+      "id": "swe-lancer-root-cause",
+      "title": "SWE-Lancer: Can Frontier LLMs Earn $1 Million from Real-World Freelance Software Engineering?",
+      "url": "https://arxiv.org/abs/2502.12115",
+      "source_type": "primary",
+      "retrieved": "2026-08-07",
+      "refresh_due": "2026-09-06",
+      "confidence": "evidence-based",
+      "supports": [
+        "004-escalation-is-an-observation"
+      ],
+      "claims": [
+        "Agents excel at localizing but fail to root cause"
+      ],
+      "does_not_prove": "A qualitative failure mode, not a threshold that can be machine-checked."
+    },
+    {
+      "id": "single-vs-multi-agent",
+      "title": "Single-Agent LLMs Outperform Multi-Agent Systems on Multi-Hop Reasoning Under Equal Thinking Token Budgets",
+      "url": "https://arxiv.org/abs/2604.02460",
+      "source_type": "primary",
+      "retrieved": "2026-08-07",
+      "refresh_due": "2026-09-06",
+      "confidence": "contested",
+      "supports": [
+        "002-the-council-is-two-meters-not-two-opinions"
+      ],
+      "claims": [
+        "Under equal thinking-token budgets single-agent matches or beats multi-agent on multi-hop reasoning",
+        "Apparent multi-agent gains are better explained by unaccounted computation and context effects"
+      ],
+      "does_not_prove": "Measured on multi-hop reasoning, not coding execution. Directly contested by the vendor result below."
+    },
+    {
+      "id": "anthropic-multi-agent",
+      "title": "How we built our multi-agent research system",
+      "url": "https://www.anthropic.com/engineering/multi-agent-research-system",
+      "source_type": "vendor",
+      "retrieved": "2026-08-07",
+      "refresh_due": "2026-09-06",
+      "confidence": "contested",
+      "supports": [
+        "002-the-council-is-two-meters-not-two-opinions"
+      ],
+      "claims": [
+        "Agents use about 4x the tokens of chat and multi-agent about 15x",
+        "A multi-agent system outperformed single-agent by 90.2% on breadth-first research",
+        "Vendor caveat: coding involves fewer truly parallelizable tasks than research"
+      ],
+      "does_not_prove": "First-party and measured on browse-style research. It is not evidence about coding execution, and the vendor says so."
+    },
+    {
+      "id": "claude-code-hooks",
+      "title": "Claude Code hooks reference",
+      "url": "https://code.claude.com/docs/en/hooks",
+      "source_type": "official",
+      "retrieved": "2026-07-07",
+      "refresh_due": "2026-09-06",
+      "confidence": "evidence-based",
+      "supports": [
+        "005-enforcement-beats-prose",
+        "003-a-verdict-is-a-command-not-a-claim"
+      ],
+      "claims": [
+        "Hooks are deterministic and guarantee the action happens, unlike advisory instructions",
+        "Exit code 2 blocks the action and the hook's stderr is fed back to Claude",
+        "Any other nonzero exit code does not block"
+      ],
+      "does_not_prove": "The reference lists event families; the full per-event payload schema was not captured. Sync's gate reads the payload defensively for that reason.",
+      "self_verified": "Exit code 2 blocking and stderr return were confirmed live against bin/sync gate on 2026-08-09."
+    },
+    {
+      "id": "claude-code-statusline",
+      "title": "Claude Code statusline",
+      "url": "https://code.claude.com/docs/en/statusline",
+      "source_type": "official",
+      "retrieved": "2026-08-07",
+      "refresh_due": "2026-09-06",
+      "confidence": "evidence-based",
+      "supports": [
+        "001-two-pools-is-the-whole-thesis"
+      ],
+      "claims": [
+        "The statusline JSON carries rate_limits.five_hour and rate_limits.seven_day used_percentage and resets_at",
+        "rate_limits appears only for Pro and Max subscribers and only after the first API response in a session"
+      ],
+      "does_not_prove": "It exposes percentages, never the numeric plan limit underneath, so absolute remaining capacity still cannot be computed."
+    },
+    {
+      "id": "codex-exec-cli",
+      "title": "Codex CLI non-interactive execution surface",
+      "url": "https://developers.openai.com/codex/cli/",
+      "local_evidence": "codex exec --help, codex-cli 0.146.0, read directly on this machine",
+      "source_type": "primary",
+      "retrieved": "2026-08-09",
+      "refresh_due": "2026-09-08",
+      "confidence": "evidence-based",
+      "supports": [
+        "001-two-pools-is-the-whole-thesis",
+        "002-the-council-is-two-meters-not-two-opinions"
+      ],
+      "claims": [
+        "codex exec supports --output-last-message for artifact output and --output-schema for typed results",
+        "Sandbox modes are read-only, workspace-write, and danger-full-access",
+        "Model and reasoning effort are selectable per invocation"
+      ],
+      "does_not_prove": "Interface of one CLI version. It says nothing about which allowance a given invocation draws down.",
+      "self_verified": "gpt-5.6-luna and gpt-5.6-terra both called successfully on 2026-08-09; a full council run completed via codex exec with exit 0."
+    },
+    {
+      "id": "claude-code-costs",
+      "title": "Claude Code costs and usage",
+      "url": "https://code.claude.com/docs/en/costs",
+      "source_type": "official",
+      "retrieved": "2026-08-09",
+      "refresh_due": "2026-09-08",
+      "confidence": "evidence-based",
+      "supports": [
+        "001-two-pools-is-the-whole-thesis"
+      ],
+      "claims": [
+        "Documents how Claude Code usage is consumed and reported for paid plans"
+      ],
+      "does_not_prove": "Does not state that switching model tier inside one subscription leaves the allowance unchanged, which is the claim doctrine 001 actually rests on.",
+      "verification_status": "URL returned HTTP 200 on 2026-08-09. Cited for the existence of documented usage accounting, not for tier-level pool behaviour."
+    },
+    {
+      "id": "claude-usage-credits",
+      "title": "Manage usage credits for paid Claude plans",
+      "url": "https://support.claude.com/en/articles/12429409-manage-usage-credits-for-paid-claude-plans",
+      "source_type": "official",
+      "retrieved": "2026-08-09",
+      "refresh_due": "2026-09-08",
+      "confidence": "evidence-based",
+      "supports": [
+        "001-two-pools-is-the-whole-thesis"
+      ],
+      "claims": [
+        "A documented overflow path exists for paid plans, billed at standard API rates once plan limits are reached, with a configurable monthly cap"
+      ],
+      "does_not_prove": "Establishes that a separate metered path exists. Says nothing about whether Codex usage and Claude usage draw on independent allowances.",
+      "verification_status": "URL returned HTTP 200 on 2026-08-09."
+    },
+    {
+      "id": "claude-code-best-practices",
+      "title": "Best practices for Claude Code",
+      "url": "https://code.claude.com/docs/en/best-practices",
+      "source_type": "official",
+      "retrieved": "2026-08-09",
+      "refresh_due": "2026-09-08",
+      "confidence": "evidence-based",
+      "supports": [
+        "003-a-verdict-is-a-command-not-a-claim",
+        "005-enforcement-beats-prose"
+      ],
+      "claims": [
+        "Official guidance is to give the agent a check it can run, and that checks can gate harder via Stop hooks or a fresh-context verification subagent"
+      ],
+      "does_not_prove": "Guidance, not a measurement. It does not quantify how much a gate improves outcomes.",
+      "verification_status": "URL returned HTTP 200 on 2026-08-09."
+    },
+    {
+      "id": "claude-usage-limit-best-practices",
+      "title": "Usage limit best practices",
+      "url": "https://support.claude.com/en/articles/9797557-usage-limit-best-practices",
+      "source_type": "official",
+      "retrieved": "2026-08-10",
+      "refresh_due": "2026-09-09",
+      "confidence": "contested",
+      "supports": [
+        "001-two-pools-is-the-whole-thesis"
+      ],
+      "claims": [
+        "Historical wording referenced separate reset labels for Opus and other models",
+        "Lists model choice and effort level among factors affecting usage limits"
+      ],
+      "does_not_prove": "Does not establish a universal, currently applicable Opus-only weekly meter. Current general usage and Max-plan pages describe shared surfaces, model- and effort-dependent usage, and weekly limits across all models.",
+      "verification_status": "Retained as a historical, conflicting official description. It is not a routing basis as of 2026-08-10."
+    },
+    {
+      "id": "claude-usage-length-limits",
+      "title": "How do usage and length limits work?",
+      "url": "https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work",
+      "source_type": "official",
+      "retrieved": "2026-08-10",
+      "refresh_due": "2026-09-09",
+      "confidence": "evidence-based",
+      "supports": [
+        "001-two-pools-is-the-whole-thesis"
+      ],
+      "claims": [
+        "Usage is affected by conversation length and complexity, features, model, effort, and plan",
+        "Usage across claude.ai, Claude Code, and Claude Desktop counts toward the same usage limit"
+      ],
+      "does_not_prove": "Does not publish an account-specific quota, pool identity, numeric draw rate, or a universal model-specific weekly meter.",
+      "verification_status": "Directly read 2026-08-10."
+    },
+    {
+      "id": "claude-max-plan",
+      "title": "What is the Max plan?",
+      "url": "https://support.claude.com/en/articles/11049741-what-is-the-max-plan",
+      "source_type": "official",
+      "retrieved": "2026-08-10",
+      "refresh_due": "2026-09-09",
+      "confidence": "evidence-based",
+      "supports": [
+        "001-two-pools-is-the-whole-thesis"
+      ],
+      "claims": [
+        "Max plans include access to Claude Code through one unified subscription",
+        "Describes a session limit that resets every five hours and a weekly usage limit that applies across all models",
+        "Warns that other model and feature caps may apply at Anthropic's discretion"
+      ],
+      "does_not_prove": "Does not establish numeric quotas, account-specific pool identities, or that all possible plan implementations have identical windows.",
+      "verification_status": "Directly read 2026-08-10. This is current official plan material and supersedes a universal Opus-only routing assumption."
+    },
+    {
+      "id": "claude-code-pro-max-plan",
+      "title": "Use Claude Code with your Pro or Max plan",
+      "url": "https://support.claude.com/en/articles/11145838-use-claude-code-with-your-pro-or-max-plan",
+      "source_type": "official",
+      "retrieved": "2026-08-10",
+      "refresh_due": "2026-09-09",
+      "confidence": "evidence-based",
+      "supports": [
+        "001-two-pools-is-the-whole-thesis"
+      ],
+      "claims": [
+        "Pro and Max users authenticate Claude Code with the same Claude credentials used for their subscription",
+        "Claude Code activity on those plans counts against shared Claude and Claude Code usage limits",
+        "API-key authentication instead uses API billing and can incur API charges"
+      ],
+      "does_not_prove": "Does not identify this operator's authenticated account, describe non-consumer plan pooling, or prove anything about OpenAI usage.",
+      "verification_status": "Directly read 2026-08-10."
+    },
+    {
+      "id": "openai-codex-pricing",
+      "title": "Codex pricing and rate card",
+      "url": "https://developers.openai.com/codex/pricing",
+      "source_type": "official",
+      "retrieved": "2026-08-10",
+      "refresh_due": "2026-09-09",
+      "confidence": "evidence-based",
+      "supports": [
+        "001-two-pools-is-the-whole-thesis"
+      ],
+      "claims": [
+        "ChatGPT Work and Codex share usage, pricing, credits, and usage limits",
+        "Plan availability, included usage, and credit extension options vary by plan"
+      ],
+      "does_not_prove": "Does not prove a standalone Codex pool, a particular account's credit availability, or a cross-vendor capacity result.",
+      "verification_status": "Directly read after the documented redirect to https://learn.chatgpt.com/docs/pricing on 2026-08-10."
+    },
+    {
+      "id": "openai-codex-chatgpt-usage-limits",
+      "title": "Using Codex with your ChatGPT plan",
+      "url": "https://help.openai.com/en/articles/11369540-codex-and-chatgpt-plan-usage-limits",
+      "source_type": "official",
+      "retrieved": "2026-08-10",
+      "refresh_due": "2026-09-09",
+      "confidence": "evidence-based",
+      "supports": [
+        "001-two-pools-is-the-whole-thesis"
+      ],
+      "claims": [
+        "Codex is included across ChatGPT plans, with plan-dependent limits",
+        "Codex, ChatGPT Work, ChatGPT for Excel, and Workspace Agents draw from the same agentic usage and credit pool where available",
+        "Task usage varies with task size and complexity, model, and execution location"
+      ],
+      "does_not_prove": "Does not identify this operator's account or workspace, prove that Codex is isolated from every other OpenAI surface, or establish cross-vendor capacity relief.",
+      "verification_status": "Directly read 2026-08-10."
+    },
+    {
+      "id": "claude-code-model-configuration",
+      "title": "Claude Code model configuration",
+      "url": "https://code.claude.com/docs/en/model-config",
+      "source_type": "official",
+      "retrieved": "2026-08-10",
+      "refresh_due": "2026-09-09",
+      "confidence": "evidence-based",
+      "supports": [
+        "004-escalation-is-an-observation"
+      ],
+      "claims": [
+        "Claude Code documents best as the most capable available model alias, currently equivalent to opus",
+        "The sonnet and opus aliases track the recommended current versions for the active provider and can change over time",
+        "Effort is selectable and lower effort trades depth for speed and usage"
+      ],
+      "does_not_prove": "Does not prove that the most capable lane is best for every task, that an alias is available on this operator's plan, or that a named route improves outcomes.",
+      "verification_status": "Directly read 2026-08-10. No live Claude model call was made during this hardening pass."
+    },
+    {
+      "id": "openai-model-guidance-gpt-5-6",
+      "title": "OpenAI model guidance for GPT-5.6",
+      "url": "https://developers.openai.com/api/docs/guides/latest-model",
+      "source_type": "official",
+      "retrieved": "2026-08-10",
+      "refresh_due": "2026-09-09",
+      "confidence": "evidence-based",
+      "supports": [
+        "004-escalation-is-an-observation"
+      ],
+      "claims": [
+        "OpenAI recommends GPT-5.6 Sol for frontier capability, Terra for a balance of intelligence and cost, and Luna for efficient high-volume work",
+        "OpenAI recommends choosing reasoning effort intentionally and using medium as a balanced starting point"
+      ],
+      "does_not_prove": "Does not prove which lane wins on this repository, that every model is included in this operator's plan, or that vendor positioning is an independent benchmark.",
+      "verification_status": "Directly read 2026-08-10. Terra and Luna callable status remains separately recorded as local evidence from 2026-08-09."
+    }
+  ],
+  "verification_note": "Titles were checked against arxiv.org/abs on 2026-08-09 by an attribution test. Five titles were corrected; two of those had been descriptive titles written by the author rather than the papers' real titles. Claims not found in the abstract were demoted or removed rather than kept with a plausible-looking citation attached."
+}

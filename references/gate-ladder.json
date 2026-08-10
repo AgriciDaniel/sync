@@ -1,0 +1,121 @@
+{
+  "version": 2,
+  "updated": "2026-08-10",
+  "doc": "Versioned argv-only gate ladder. All applicable detectors are combined. A hard failure stops later steps. Missing or uncollected required evidence is inconclusive, never pass. Commands run in a network-isolated Bubblewrap sandbox with a private home, a narrow read-only runtime allowlist, only the bound project and a private temporary directory writable on the host, and .git remounted read-only.",
+  "rules": [
+    "Commands are argv arrays and execute with shell disabled and a scrubbed environment.",
+    "Every hard step is required for a pass.",
+    "A missing runner or configured no-evidence exit is inconclusive.",
+    "Unsandboxed execution requires the explicit --allow-unsandboxed-gates operator override.",
+    "Project gate files require a run-bound project, an operator_reviewed marker, the explicit --allow-project-gates flag, and the exact raw-file SHA-256 through --project-gate-sha256. The hash binds exact configuration but does not authenticate a human; caller policy remains the authorization boundary."
+  ],
+  "detectors": [
+    {
+      "id": "node",
+      "when_file_exists": "package.json",
+      "steps": [
+        {
+          "id": "node-typecheck",
+          "argv": ["npm", "run", "--silent", "typecheck"],
+          "hard": true
+        },
+        {
+          "id": "node-lint",
+          "argv": ["npm", "run", "--silent", "lint"],
+          "hard": true
+        },
+        {
+          "id": "node-test",
+          "argv": ["npm", "test", "--silent"],
+          "hard": true
+        }
+      ]
+    },
+    {
+      "id": "python",
+      "when_file_exists": "pyproject.toml",
+      "steps": [
+        {
+          "id": "python-compile",
+          "argv": ["python3", "-m", "compileall", "-q", "."],
+          "hard": true
+        },
+        {
+          "id": "python-lint",
+          "argv": ["ruff", "check", "."],
+          "hard": true
+        },
+        {
+          "id": "python-typecheck",
+          "argv": ["mypy", "."],
+          "hard": true
+        },
+        {
+          "id": "python-test",
+          "argv": ["pytest", "-q"],
+          "hard": true,
+          "skip_exit_codes": [5],
+          "skip_note": "pytest collected no tests"
+        }
+      ]
+    },
+    {
+      "id": "rust",
+      "when_file_exists": "Cargo.toml",
+      "steps": [
+        {
+          "id": "rust-check",
+          "argv": ["cargo", "check", "--quiet"],
+          "hard": true
+        },
+        {
+          "id": "rust-clippy",
+          "argv": ["cargo", "clippy", "--quiet", "--all-targets"],
+          "hard": true
+        },
+        {
+          "id": "rust-test",
+          "argv": ["cargo", "test", "--quiet"],
+          "hard": true
+        }
+      ]
+    },
+    {
+      "id": "go",
+      "when_file_exists": "go.mod",
+      "steps": [
+        {
+          "id": "go-build",
+          "argv": ["go", "build", "./..."],
+          "hard": true
+        },
+        {
+          "id": "go-vet",
+          "argv": ["go", "vet", "./..."],
+          "hard": true
+        },
+        {
+          "id": "go-test",
+          "argv": ["go", "test", "./..."],
+          "hard": true
+        }
+      ]
+    },
+    {
+      "id": "brain",
+      "when_file_exists": "scripts/audit_brain.py",
+      "steps": [
+        {
+          "id": "brain-compile",
+          "argv": ["python3", "-m", "compileall", "-q", "scripts", "sync_brain", "tests"],
+          "hard": true
+        },
+        {
+          "id": "brain-audit",
+          "argv": ["python3", "scripts/audit_brain.py", "--json", "--report-only"],
+          "hard": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "name": "agricidaniel-sync-brain",
+  "owner": {
+    "name": "Daniel Agrici"
+  },
+  "metadata": {
+    "description": "Sync template and skill layer",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "sync-brain",
+      "source": "./",
+      "description": "Obsidian brain for Claude and Codex council orchestration: task routing across billing pools, artifact-mediated coordination, ground-truth verification gates, quota and cost measurement, and policy evolution from recorded outcomes.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Daniel Agrici"
+      },
+      "repository": "https://github.com/AgriciDaniel/sync",
+      "license": "Proprietary",
+      "category": "sync",
+      "tags": [
+        "obsidian",
+        "brain",
+        "sync"
+      ],
+      "keywords": [
+        "sync-brain",
+        "sync",
+        "obsidian"
+      ]
+    }
+  ]
+}

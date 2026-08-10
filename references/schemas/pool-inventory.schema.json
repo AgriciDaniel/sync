@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sync.local/schemas/pool-inventory.schema.json",
+  "title": "Sync pool inventory",
+  "type": "object",
+  "required": ["schema", "updated", "purpose", "routing_rule", "pools", "operator_action"],
+  "properties": {
+    "schema": {"const": "sync-pool-inventory/1"},
+    "updated": {"type": "string"},
+    "purpose": {"type": "string"},
+    "routing_rule": {"type": "string"},
+    "pools": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "routing_alias", "declared_pool_id", "identity_kind", "expected_auth_mode",
+          "observed_status", "documented_status", "source_ids", "last_checked",
+          "headroom_status"
+        ],
+        "properties": {
+          "routing_alias": {"type": "string"},
+          "declared_pool_id": {"type": "string"},
+          "identity_kind": {"type": "string"},
+          "expected_auth_mode": {"type": "string"},
+          "observed_status": {"type": "string"},
+          "documented_status": {"type": "string"},
+          "source_ids": {"type": "array", "items": {"type": "string"}},
+          "last_checked": {"type": "string"},
+          "headroom_status": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "operator_action": {"type": "string"}
+  },
+  "additionalProperties": false
+}

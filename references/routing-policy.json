@@ -1,0 +1,154 @@
+{
+  "version": 1,
+  "updated": "2026-08-10",
+  "doc": "The token-agnostic core of Sync. Scripts and skills reference ROLES, never vendor or model names. Pool labels are routing aliases, not proof of billing isolation. A capacity route is eligible only when references/pool-inventory.json has distinct declared local pool IDs, observed non-secret authentication modes, and current source and destination headroom marked available. Exact account and workspace identifiers are intentionally not stored.",
+  "pools": {
+    "claude": {
+      "surface": "Anthropic Claude consumer subscription. Claude documents claude.ai, Claude Code, and Claude Desktop as sharing a usage limit.",
+      "pool_identity_source": "references/pool-inventory.json#pools[anthropic_primary]",
+      "meter": "Plan-, task-, model-, effort-, and feature-dependent usage. Current official plan documentation describes session and weekly limits, but does not establish a universal Opus-only weekly meter.",
+      "relieves_cap_of": [],
+      "note": "Changing Claude models can change usage, but it is not a documented pool crossing. Do not infer a particular sub-meter without plan-specific evidence."
+    },
+    "codex": {
+      "surface": "OpenAI ChatGPT agentic usage surface. Codex shares an agentic usage and credit pool with ChatGPT Work, ChatGPT for Excel, and Workspace Agents where available.",
+      "pool_identity_source": "references/pool-inventory.json#pools[openai_primary]",
+      "meter": "Plan-, task-, model-, and execution-location-dependent shared agentic usage and credits. Window and credit availability are plan-specific.",
+      "relieves_cap_of": [],
+      "note": "Codex is not a standalone isolated pool. A route from an Anthropic declaration is eligible only when the privacy-safe local pool IDs differ, both authentication modes are observed, and both headroom values are available."
+    },
+    "metered": {
+      "surface": "Separately authenticated, approved API billing account",
+      "meter": "Provider terms, account configuration, rate limits, credits, and spend controls determine availability and billing. Do not infer a universal cap, price, or discount.",
+      "relieves_cap_of": [],
+      "note": "This may be a distinct pool only after its non-secret declaration, current terms, spend approval, and headroom are observed. It may then relieve a named source pool, but never unconditionally."
+    }
+  },
+  "roles": {
+    "spec": {
+      "purpose": "Turn an ambiguous request into an unambiguous brief. The highest-leverage spend in the system.",
+      "harness": "claude",
+      "pool": "claude",
+      "model": "best",
+      "effort": "high",
+      "fresh_context": false,
+      "rationale": "Use Claude Code's documented best alias for ambiguous specification. The alias tracks the most capable available model, currently equivalent to opus. This is vendor guidance, not a repository benchmark or an assertion of a separate meter.",
+      "verified": false,
+      "verify_note": "The alias is documented in the official Claude Code model configuration reference retrieved 2026-08-10. No live Claude call was made during this hardening pass."
+    },
+    "orchestrate": {
+      "purpose": "Hold requirements, integrate results, own synthesis. Never delegated.",
+      "harness": "claude",
+      "pool": "claude",
+      "model": "best",
+      "effort": "high",
+      "fresh_context": false,
+      "rationale": "Keep the synthesis owner on Claude Code's documented best alias while bounded independent execution uses lower lanes. This follows the operator's quality preference; it is not a measured performance claim.",
+      "verified": false,
+      "verify_note": "The alias is documented in the official Claude Code model configuration reference retrieved 2026-08-10. No live Claude call was made during this hardening pass."
+    },
+    "implement": {
+      "purpose": "Execute a well-specified change. This is a candidate cross-pool route only when the inventory marks it eligible.",
+      "harness": "codex",
+      "pool": "codex",
+      "model": "gpt-5.6-terra",
+      "effort": "medium",
+      "fresh_context": true,
+      "rationale": "Specified execution is a candidate for a declared distinct OpenAI pool when it has headroom. Without distinct inventory identities, this is a model and harness preference only.",
+      "verified": true
+    },
+    "bulk": {
+      "purpose": "Mechanical grind: test triage, lint passes, log reading, file location, renames, docstrings.",
+      "harness": "codex",
+      "pool": "codex",
+      "model": "gpt-5.6-luna",
+      "effort": "low",
+      "fresh_context": true,
+      "rationale": "Use the designated high-volume lane only for precisely specified work with a real check. It is capacity relief only under the declared-pool condition.",
+      "verified": true,
+      "verify_note": "Called live 2026-08-09 via `codex exec -m gpt-5.6-luna`: exit 0, model echoed as requested, no substitution. Canon 009 requires calling a model before wiring it, because a provider listing can include ids that fail on invocation."
+    },
+    "review": {
+      "purpose": "Adversarial verification of a diff by a reader that did not write it.",
+      "harness": "claude",
+      "pool": "claude",
+      "model": "sonnet",
+      "effort": "high",
+      "fresh_context": true,
+      "rationale": "Fresh context and non-authorship are the review controls. Reserve higher-reasoning escalation for named triggers, not an assumed model-specific meter.",
+      "verified": true
+    },
+    "stuck": {
+      "purpose": "Reached only after the escalation triggers fire. Never a default.",
+      "harness": "claude",
+      "pool": "claude",
+      "model": "best",
+      "effort": "xhigh",
+      "fresh_context": false,
+      "rationale": "Use the documented best alias only after a named trigger. Escalation is an observation, not an argument under sunk cost.",
+      "verified": false,
+      "verify_note": "The alias is documented in the official Claude Code model configuration reference retrieved 2026-08-10. No live Claude call was made during this hardening pass."
+    }
+  },
+  "escalation_triggers": [
+    {
+      "id": "files",
+      "test": "change touches more than 3 files",
+      "auto_detectable": true
+    },
+    {
+      "id": "root_cause",
+      "test": "task requires root-causing across components rather than localizing",
+      "auto_detectable": false
+    },
+    {
+      "id": "horizon",
+      "test": "expected horizon beyond roughly one hour of skilled human work",
+      "auto_detectable": false
+    },
+    {
+      "id": "ambiguous",
+      "test": "requirements cannot be pinned down before starting",
+      "auto_detectable": false
+    },
+    {
+      "id": "concurrency",
+      "test": "concurrency, memory model, or subtle shared state involved",
+      "auto_detectable": false
+    },
+    {
+      "id": "retries",
+      "test": "two attempts have already failed",
+      "auto_detectable": true
+    }
+  ],
+  "council_defaults": {
+    "members": 2,
+    "max_members": 5,
+    "topology": "artifact-mediated",
+    "coordination_path": ".sync/runs/<run-id>/",
+    "synthesis_owner": "orchestrate",
+    "rationale": "canon 006: shared context is what makes delegation cost more. The filesystem is the message bus. canon 007: three focused members beat five scattered ones."
+  },
+  "autonomy_envelope": {
+    "autonomous": [
+      "reading any file in the workspace",
+      "editing files in the workspace",
+      "running the gate ladder commands",
+      "choosing a role, model, effort, and pool",
+      "escalating on a named trigger",
+      "creating and writing run directories and the outcome ledger"
+    ],
+    "requires_human_approval": [
+      "git commit",
+      "git push",
+      "publishing or deploying",
+      "contacting a third party",
+      "spending money or changing a spend cap",
+      "changing accounts or permissions",
+      "any change outside the workspace",
+      "anything irreversible without a stated rollback path"
+    ],
+    "rationale": "canon 012: capability is not authorization. Sync is autonomous inside the workspace and gated at its boundary. This is the line that keeps a council's work owned by a human."
+  }
+}

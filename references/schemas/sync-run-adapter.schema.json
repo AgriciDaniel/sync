@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sync.local/schemas/sync-run-adapter.schema.json",
+  "title": "Sanitized, fingerprint-verified Sync run import",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "opened_at",
+    "recorded_at",
+    "project",
+    "route",
+    "execution",
+    "gate",
+    "outcome",
+    "bindings",
+    "source_artifacts"
+  ],
+  "properties": {
+    "schema_version": {"const": "sync-run-adapter/1"},
+    "run_id": {"type": "string", "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){0,95}$"},
+    "opened_at": {"type": "string", "minLength": 1},
+    "recorded_at": {"type": "string", "minLength": 1},
+    "project": {"type": "object"},
+    "route": {"type": "object"},
+    "execution": {"type": "object"},
+    "gate": {"type": "object"},
+    "outcome": {"type": "object"},
+    "bindings": {"type": "object"},
+    "source_artifacts": {"type": "array", "minItems": 5}
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sync.local/schemas/result.schema.json",
+  "title": "Sync executor result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "summary", "changed_files", "checks", "unverified"],
+  "properties": {
+    "schema_version": {"const": "sync-result/1"},
+    "status": {"enum": ["completed", "blocked", "needs_clarification"]},
+    "summary": {"type": "string"},
+    "changed_files": {"type": "array", "items": {"type": "string"}},
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["command", "exit_code", "result"],
+        "properties": {
+          "command": {"type": "string"},
+          "exit_code": {"type": ["integer", "null"]},
+          "result": {"enum": ["pass", "fail", "inconclusive", "not_run"]}
+        }
+      }
+    },
+    "unverified": {"type": "array", "items": {"type": "string"}}
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "checks": [
+    {
+      "argv": [
+        "/usr/bin/python",
+        "-m",
+        "compileall",
+        "-q",
+        "scripts",
+        "sync_brain",
+        "tests",
+        "bin/sync",
+        "bin/sync-install"
+      ],
+      "exit_code": 0,
+      "name": "compileall",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "ruff",
+        "check",
+        "."
+      ],
+      "exit_code": 0,
+      "name": "ruff",
+      "output_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "argv": [
+        "mypy",
+        "."
+      ],
+      "exit_code": 0,
+      "name": "mypy",
+      "output_sha256": "fa935e779fe5886f2480e415c7e46616bdedad407f9da1cca28e7d341d95f4d7"
+    },
+    {
+      "argv": [
+        "detect-secrets",
+        "scan",
+        "--slim",
+        "--all-files",
+        "--no-verify",
+        "--exclude-files",
+        "(^|/)(dist|\\.git|\\.mypy_cache|\\.pytest_cache|\\.ruff_cache|__pycache__)/|^\\.secrets\\.baseline$|^references/verification/market-ready\\.json$"
+      ],
+      "exit_code": 0,
+      "name": "secret-scan",
+      "output_sha256": "75dad9e86e5b2b8f044451058316ef41eee7f823ef33f1da40e9eaabb7bf2b16",
+      "summary": "hashed secret baseline matched 8 reviewed findings"
+    },
+    {
+      "argv": [
+        "/usr/bin/python",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "exit_code": 0,
+      "name": "pytest-full",
+      "output_sha256": "a5f89b763dddeb15548fed5019ff19cac5dca7a7085523408699ebc2ae29f306"
+    },
+    {
+      "argv": [
+        "/usr/bin/python",
+        "tests/test_pipeline.py"
+      ],
+      "exit_code": 0,
+      "name": "pipeline",
+      "output_sha256": "3662e675e3a13396ba2a7def4d09a7090df89817e46723a17bbc2c49d8aa7320"
+    },
+    {
+      "argv": [
+        "/usr/bin/python",
+        "scripts/build_demo_vault.py",
+        "--verify-determinism",
+        "--out-dir",
+        "<home>/.local/state/codex-desktop/tmp/sync-market-demo-sc5qwerv"
+      ],
+      "exit_code": 0,
+      "name": "demo-byte-tree",
+      "output_sha256": "d949b04df4a8b79d4328674ef92d5dee5e86108ec5f140ee910b662993949d0f"
+    }
+  ],
+  "schema": "sync-market-ready-evidence/1",
+  "scope": "Local source-bound acceptance evidence. It does not claim that hosted CI, publication, or deployment ran.",
+  "source_tree_sha256": "a6ac84454adf846585330110d51071f46bbb9734118e2ffb7ee4d4a1af12e68b",
+  "verified_at": "2026-08-10T17:54:15+00:00"
+}

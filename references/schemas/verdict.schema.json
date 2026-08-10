@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sync.local/schemas/verdict.schema.json",
+  "title": "Sync gate verdict",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version", "attempt_id", "status", "passed", "project", "detectors",
+    "config_fingerprint", "dispatch_attempt_id", "dispatch_fingerprint",
+    "evidence_dir", "at", "steps"
+  ],
+  "properties": {
+    "version": {"const": 2},
+    "attempt_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["pass", "fail", "inconclusive"]},
+    "passed": {"type": "boolean"},
+    "project": {"type": "string", "minLength": 1},
+    "detectors": {"type": "array", "items": {"type": "string"}},
+    "config_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "dispatch_attempt_id": {"type": ["string", "null"]},
+    "dispatch_fingerprint": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "evidence_dir": {"type": ["string", "null"]},
+    "at": {"type": "string", "minLength": 1},
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id", "argv", "exit_code", "result", "hard", "seconds", "reason",
+          "output_sha256", "output_tail", "execution_mode"
+        ],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"},
+          "argv": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+          "exit_code": {"type": "integer"},
+          "result": {"enum": ["pass", "fail", "inconclusive"]},
+          "hard": {"type": "boolean"},
+          "seconds": {"type": "number", "minimum": 0},
+          "reason": {"type": ["string", "null"]},
+          "output_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "output_tail": {"type": "string"},
+          "execution_mode": {
+            "enum": ["bubblewrap", "unsandboxed-explicit", "sandbox-unavailable"]
+          }
+        }
+      }
+    }
+  }
+}

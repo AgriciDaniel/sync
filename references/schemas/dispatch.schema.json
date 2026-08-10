@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sync.local/schemas/dispatch.schema.json",
+  "title": "Sync Codex dispatch provenance",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version", "attempt_id", "run_id", "project", "route_fingerprint",
+    "codex_version", "brief_sha256", "schema_sha256", "config",
+    "config_fingerprint", "started_at", "finished_at", "dry_run",
+    "duration_seconds", "exit_code", "result_status", "executor_status",
+    "result_sha256"
+  ],
+  "properties": {
+    "version": {"const": 2},
+    "attempt_id": {"type": "string", "minLength": 1},
+    "run_id": {"type": "string", "minLength": 1},
+    "project": {"type": "string", "minLength": 1},
+    "route_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "codex_version": {"type": "string", "minLength": 1},
+    "brief_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "schema_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sandbox", "approval_policy", "user_config", "execpolicy_rules",
+        "ephemeral", "git_repo_check", "shell_environment_policy",
+        "json_events", "model", "effort", "output_schema_sha256",
+        "timeout_seconds"
+      ],
+      "properties": {
+        "sandbox": {"const": "workspace-write"},
+        "approval_policy": {"const": "never"},
+        "user_config": {"const": "ignored"},
+        "execpolicy_rules": {"const": "ignored"},
+        "ephemeral": {"const": true},
+        "git_repo_check": {"enum": ["required", "skipped-explicitly"]},
+        "shell_environment_policy": {"const": "core"},
+        "json_events": {"const": true},
+        "model": {"type": "string", "minLength": 1},
+        "effort": {"type": "string", "minLength": 1},
+        "output_schema_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 7200}
+      }
+    },
+    "config_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "started_at": {"type": "string", "minLength": 1},
+    "finished_at": {"type": "string", "minLength": 1},
+    "dry_run": {"type": "boolean"},
+    "duration_seconds": {"type": "number", "minimum": 0},
+    "exit_code": {"type": "integer"},
+    "result_status": {"enum": ["valid", "invalid", "not-produced", "not-run"]},
+    "executor_status": {
+      "type": ["string", "null"],
+      "enum": ["completed", "blocked", "needs_clarification", null]
+    },
+    "result_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}
+  }
+}

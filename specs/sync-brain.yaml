@@ -1,0 +1,117 @@
+# Brainstein spec v3 - Sync
+# The doctrine layer of Sync: a Claude + Codex council orchestration and
+# execution system. The brain holds policy and evidence; bin/ enforces it.
+spec_version: 3
+slug: "sync-brain"
+title: "Sync"
+domain: "Claude and Codex council orchestration: task routing across billing pools, artifact-mediated coordination, ground-truth verification gates, quota and cost measurement, and policy evolution from recorded outcomes"
+buyer: "An operator running both Claude Code and Codex who wants routing, verification, and capacity decisions enforced by the harness rather than described in prose."
+owner: "Daniel Agrici"
+repo_url: "https://github.com/AgriciDaniel/sync"
+license_name: "Proprietary"
+research_refresh_cadence: "monthly for prices, quotas, model rosters, and plan limits; before every release for official harness requirements; benchmark leaderboards rechecked each refresh because several are silently frozen"
+workflows:
+  - "Route: classify a task and bind it to a harness, model, effort, and billing pool before work starts"
+  - "Spec: spend the frontier tier on an unambiguous brief, not on the typing"
+  - "Council: run Claude and Codex against one artifact-mediated run directory"
+  - "Gate: execute the ground-truth check ladder in a bounded sandbox and record captured redacted evidence"
+  - "Measure: aggregate valid artifact-derived run counts, wall-clock time, executor outcomes, and gate outcomes"
+  - "Evolve: revise routing policy from the outcome ledger, never from impression"
+raw_sources:
+  - "Claude Code statusline JSON, OpenTelemetry metrics, and session transcripts supplied by the operator"
+  - "Codex config.toml, rate-limit surfaces, and session exports supplied by the operator"
+  - "Sync run directories, verdict files, and the outcome ledger produced locally"
+enrichment_sources:
+  - "Official Anthropic and OpenAI platform, pricing, plan, and harness documentation"
+  - "Peer-reviewed and preprint studies on agent routing, self-repair, and multi-agent cost"
+  - "Benchmark leaderboards that publish per-instance cost and hold the harness fixed"
+deliverables:
+  - "Routing policy table: role to harness, model, effort, and billing pool"
+  - "Escalation trigger card: the observed cliff edges that force the frontier tier"
+  - "Verification gate specification: the ordered ground-truth ladder per work class"
+  - "Council run report: brief, plan, evidence, verdict, and outcome"
+  - "Outcome ledger: artifact-derived pool labels, run time, executor status, gate status, and outcome status; live Claude pressure remains statusline-only"
+  - "Enforcement audit: what the doctrine prescribes against what the harness actually executes"
+refusal_rules:
+  - "No capacity-relief claim unless source and destination have distinct declared pool IDs, observed non-secret authentication modes, and current headroom recorded as available"
+  - "No price, quota, or benchmark number without a dated source and the plan or harness it applies to"
+  - "No gate result reported from model judgment; a verdict requires a command, an exit code, and captured output"
+  - "No commit, push, publish, deploy, spend, account change, or production change without explicit owner approval"
+  - "No intentional credential persistence; best-effort redaction and sandbox controls do not prove arbitrary output is secret-free"
+  - "No claim of measured improvement without naming the baseline and the measurement"
+safety_risks:
+  - "A council amplifying confident error when the verifier is weaker than the work"
+  - "Autonomy escaping the workspace envelope into irreversible or outward-facing actions"
+  - "Stale prices, quotas, and model rosters driving a routing decision that no longer holds"
+  - "Secrets leaking into run directories, evidence captures, or the outcome ledger"
+  - "Untrusted tool output and inter-agent messages read as instructions"
+  - "Delegation added for its own sake, reproducing the measured double-context penalty"
+playbook_steps:
+  - "Record the baseline before adopting any routing change, because perception inverts"
+  - "Bind role to harness, model, effort, and pool in one table that scripts read"
+  - "Write the brief at the frontier tier and cache it before any execution"
+  - "Coordinate through the run directory on disk, never through shared context"
+  - "Gate on commands the author did not write, strongest check first"
+  - "Append the outcome, then let evolve propose policy changes with evidence attached"
+audit_focus:
+  - "enforcement coverage: prescribed controls that are actually installed and firing"
+  - "pool attribution correctness on every routing claim"
+  - "verdict provenance: every gate result traceable to a captured command"
+  - "source-ledger freshness for all price, quota, and roster claims"
+next_action_signals:
+  - "prescribed control present in doctrine but absent from the harness"
+  - "stale refresh_due > 30 days on a price, quota, or roster claim"
+  - "routing rule with no supporting outcome record after ten runs"
+  - "gate ladder step skipped in the last completed run"
+claim_ledger_policy: "single-source marked; second source required for any capacity, price, or benchmark claim"
+second_source_policy: "required for market, current, comparative, numeric, and high-stakes claims"
+source_refresh_days: 30
+confidence_policy: "evidence-based, practitioner, contested, folklore"
+canon_seed_count: 10
+canon_targets:
+canon_fold_targets:
+note_line_floor: 80
+wikilink_target: 8
+seed_gaps:
+  - "The exact local account or workspace separation is intentionally not stored; only privacy-safe pool declarations and authentication modes are observed"
+  - "Current source and destination headroom is not recorded, so this operator's cross-pool capacity relief cannot be claimed"
+  - "Task consumption and plan-specific capacity vary, so this workflow cannot be sized from a universal numeric allowance"
+seed_questions:
+  - "Does moving execution to the Codex pool measurably extend the Claude week under this operator's real workload?"
+  - "Does the council beat a single session on wall clock and merged work, or only on how thorough it feels?"
+seed_experiments:
+  - "Paired-run probe: same task class solo against council, measured on wall clock, valid outcome counts, and gate pass rate"
+  - "Pool attribution probe: drive one harness to a limit and observe which surfaces degrade"
+flow_playbooks:
+  - "Claim Verification Flow"
+  - "Explore Plan Code Commit"
+  - "Multi-Agent Fan-Out Research Flow"
+  - "Context Compaction Routine"
+verification_modes:
+  - "tool-result audit"
+  - "fresh-context verifier"
+  - "claim-ledger review"
+eval_seed_count: 20
+secretary_mode: "single" # pragma: allowlist secret
+curator_themes:
+publish_surface: "sanitized-quartz"
+public_exclude_patterns:
+  - ".raw"
+  - ".obsidian"
+  - ".sync"
+  - "hot.md"
+  - "log.md"
+  - "references/source-ledger.json"
+  - "references/claim-ledger.md"
+public_content_policy: "publish summaries, links, and compliant short quotes only"
+corpus_scope_policy: "each corpus note states harness, plan, date, source, and non-scope"
+context_budget_policy: "hot cache plus run directory plus just-in-time retrieval"
+retrieval_pattern: "wiki plus hybrid search plus graph traversal"
+provenance_trace_policy: "source to claim to note to policy row to enforced control"
+memory_governance_policy: "write, store, retrieve, execute, share, forget, rollback"
+mutation_policy: "workspace-autonomous-boundary-gated"
+adapter_domain_depth: "schemas plus importers plus synthesis plus renderers plus fixtures plus tests"
+live_api_spend_cap_usd: 0
+answer_engine_policy: "useful crawlable primary-source passages, no GEO hacks"
+substance_profile: "fable-grade"
+uncertainty_eval_policy: "reward no data; penalize confident unsupported answers"

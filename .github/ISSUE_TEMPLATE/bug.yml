@@ -1,0 +1,43 @@
+name: Bug report
+description: Report a reproducible Sync defect without credentials or client data.
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Never paste tokens, credentials, private run artifacts, or client data.
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Observed behavior
+      description: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Include sanitized commands and output only.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Sync version or revision
+    validations:
+      required: true
+  - type: dropdown
+    id: secret_check
+    attributes:
+      label: Sensitive-data check
+      options:
+        - I confirmed this report contains no secrets or client data.
+    validations:
+      required: true

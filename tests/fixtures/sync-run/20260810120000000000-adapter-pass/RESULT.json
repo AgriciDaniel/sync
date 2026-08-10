@@ -1,0 +1,14 @@
+{
+  "schema_version": "sync-result/1",
+  "status": "completed",
+  "summary": "Fixture implementation completed.",
+  "changed_files": ["src/example.py"],
+  "checks": [
+    {
+      "command": "pytest -q",
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "unverified": []
+}

@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "attempt_id": "20260810120013000000",
+  "status": "pass",
+  "passed": true,
+  "project": "/workspace/acme",
+  "detectors": ["python"],
+  "config_fingerprint": "6666666666666666666666666666666666666666666666666666666666666666",
+  "dispatch_attempt_id": "20260810120002000000",
+  "dispatch_fingerprint": "9a78354b489e0f9a00d885266a5d6e2450b106fa2ec274e4f0d1706c3c6c2e40",
+  "evidence_dir": "EVIDENCE/20260810120013000000",
+  "at": "2026-08-10T12:00:13+00:00",
+  "steps": [
+    {
+      "id": "python-test",
+      "argv": ["python", "-m", "pytest", "-q"],
+      "exit_code": 0,
+      "result": "pass",
+      "hard": true,
+      "seconds": 1.25,
+      "reason": null,
+      "output_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+      "output_tail": "1 passed",
+      "execution_mode": "bubblewrap"
+    }
+  ]
+}

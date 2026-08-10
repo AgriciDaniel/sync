@@ -1,0 +1,297 @@
+#!/usr/bin/env python3
+"""Wire Sync's controls into the harness. Dry run by default.
+
+Doctrine that is not enforced degrades silently, because harness system prompts
+override prose (canon 012). This script wires these specific Sync controls:
+
+  statusLine                  live Claude pressure, and a prompt to verify
+                              route eligibility when pressure is high
+  Stop hook -> sync gate      a turn cannot end while a hard check is red
+  CLAUDE_CODE_ENABLE_TELEMETRY  enables query_source attribution for an
+                              external telemetry consumer; Sync does not ingest
+                              or calculate telemetry-derived cost in this version
+  ~/.codex/skills/sync        one skill definition, symlinked per harness
+
+It appends the Stop hook and preserves permissions. It replaces a different
+statusLine, updates the telemetry setting, and records one atomic transaction
+before touching anything. Revert restores both Claude settings and the Codex
+skill link, but refuses to overwrite changes made after Sync installed them.
+
+  sync-install            show what would change
+  sync-install --apply    write it
+  sync-install --revert   restore the most recent backup
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import shutil
+import sys
+from datetime import datetime
+from pathlib import Path
+
+BRAIN = Path(__file__).resolve().parent.parent
+BIN = BRAIN / "bin"
+INSTALL_HOME = Path(os.environ.get("SYNC_BRAIN_INSTALL_HOME", str(Path.home()))).expanduser()
+SETTINGS = INSTALL_HOME / ".claude" / "settings.json"
+BACKUP_DIR = INSTALL_HOME / ".claude" / "backups"
+CODEX_SKILLS = INSTALL_HOME / ".codex" / "skills"
+
+RED, GRN, YLW, DIM, CYN, RST = (
+    "\033[31m",
+    "\033[32m",
+    "\033[33m",
+    "\033[2m",
+    "\033[36m",
+    "\033[0m",
+)
+
+
+def load_settings() -> dict:
+    if not SETTINGS.exists():
+        return {}
+    try:
+        return json.loads(SETTINGS.read_text(encoding="utf-8"))
+    except ValueError as exc:
+        print(f"{RED}{SETTINGS} is not valid JSON: {exc}{RST}", file=sys.stderr)
+        print(f"{RED}Refusing to touch it. Fix the file first.{RST}", file=sys.stderr)
+        raise SystemExit(1)
+
+
+def plan(settings: dict) -> tuple[dict, list[str]]:
+    """Return the merged settings and a human-readable list of changes."""
+    new = json.loads(json.dumps(settings))  # deep copy
+    changes: list[str] = []
+
+    statusline_cmd = str(BIN / "sync-statusline")
+    current = new.get("statusLine")
+    if not (isinstance(current, dict) and current.get("command") == statusline_cmd):
+        if current:
+            changes.append(
+                f"{YLW}replace{RST} statusLine "
+                f"{DIM}(was: {current.get('command', current)}){RST}"
+            )
+        else:
+            changes.append(f"{GRN}add{RST}     statusLine -> sync-statusline")
+        new["statusLine"] = {"type": "command", "command": statusline_cmd, "padding": 0}
+
+    gate_cmd = f"{BIN / 'sync'} gate --hook"
+    hooks = new.setdefault("hooks", {})
+    stop = hooks.setdefault("Stop", [])
+    already = any(gate_cmd in json.dumps(entry) for entry in stop)
+    if not already:
+        stop.append({"hooks": [{"type": "command", "command": gate_cmd}]})
+        changes.append(
+            f"{GRN}add{RST}     Stop hook -> sync gate --hook "
+            f"{DIM}(appended, {len(stop) - 1} existing Stop hook(s) kept){RST}"
+        )
+
+    env = new.setdefault("env", {})
+    if env.get("CLAUDE_CODE_ENABLE_TELEMETRY") != "1":
+        env["CLAUDE_CODE_ENABLE_TELEMETRY"] = "1"
+        changes.append(f"{GRN}add{RST}     env.CLAUDE_CODE_ENABLE_TELEMETRY=1")
+
+    return new, changes
+
+
+def show_untouched(settings: dict) -> None:
+    hooks = settings.get("hooks", {})
+    kept = []
+    for event, entries in hooks.items():
+        if event == "Stop":
+            continue
+        for entry in entries:
+            for h in entry.get("hooks", []):
+                kept.append(f"{event}:{Path(h.get('command', '?')).name}")
+    perms = settings.get("permissions", {}).get("allow", [])
+    print(f"\n{CYN}Left untouched{RST}")
+    if kept:
+        print(f"  hooks       {', '.join(kept)}")
+    if perms:
+        print(f"  permissions {len(perms)} allow rule(s)")
+    for key in ("model", "effortLevel", "enabledPlugins", "extraKnownMarketplaces"):
+        if key in settings:
+            print(f"  {key}")
+
+
+def sha256_file(path: Path) -> str:
+    import hashlib
+
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def timestamp() -> str:
+    return datetime.now().strftime("%Y%m%d-%H%M%S-%f")
+
+
+def snapshot_path(path: Path, backup_root: Path, name: str) -> dict[str, str]:
+    """Capture an exact pre-change state without following user symlinks."""
+    if path.is_symlink():
+        return {"kind": "symlink", "target": os.readlink(path)}
+    if not path.exists():
+        return {"kind": "absent"}
+    if path.is_file():
+        saved = backup_root / name
+        shutil.copy2(path, saved)
+        return {"kind": "file", "backup": str(saved), "sha256": sha256_file(path)}
+    return {"kind": "directory"}
+
+
+def restore_path(path: Path, snapshot: dict[str, str]) -> None:
+    kind = snapshot["kind"]
+    if path.is_symlink() or path.is_file():
+        path.unlink()
+    elif path.exists():
+        shutil.rmtree(path)
+    if kind == "file":
+        path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(snapshot["backup"], path)
+    elif kind == "symlink":
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.symlink_to(snapshot["target"])
+    elif kind != "absent":
+        raise RuntimeError(f"unsupported snapshot kind: {kind}")
+
+
+def codex_link_state() -> tuple[bool, str | None]:
+    src = BRAIN / "skills" / "sync"
+    dest = CODEX_SKILLS / "sync"
+    if not src.exists() or (dest.is_symlink() and dest.resolve() == src.resolve()):
+        return False, None
+    if dest.exists() or dest.is_symlink():
+        return True, (
+            f"{dest} already exists and is not Sync's current skill link. "
+            "Refusing to replace a user-owned target."
+        )
+    return True, None
+
+
+def link_codex_skill(apply: bool) -> list[str]:
+    """One definition, symlinked per harness (canon 009)."""
+    src = BRAIN / "skills" / "sync"
+    if not src.exists():
+        return [f"{DIM}skip{RST}    codex skill link (skills/sync not present yet)"]
+    dest = CODEX_SKILLS / "sync"
+    changes, error = codex_link_state()
+    if error:
+        return [f"{RED}blocked{RST} {error}"]
+    if not changes:
+        return []
+    action = "link"
+    if apply:
+        CODEX_SKILLS.mkdir(parents=True, exist_ok=True)
+        dest.symlink_to(src, target_is_directory=True)
+    return [f"{GRN}{action}{RST}    {dest} -> {src}"]
+
+
+def cmd_revert() -> int:
+    if not BACKUP_DIR.exists():
+        print(f"{RED}no backups found{RST}")
+        return 1
+    backups = sorted(BACKUP_DIR.glob("transaction-*.json"))
+    if not backups:
+        print(f"{RED}no Sync backups found in {BACKUP_DIR}{RST}")
+        return 1
+    latest = backups[-1]
+    try:
+        transaction = json.loads(latest.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        print(f"{RED}invalid Sync transaction {latest}: {exc}{RST}")
+        return 1
+
+    changed = transaction.get("changed", {})
+    checks: list[tuple[Path, dict[str, str], str]] = []
+    if "settings" in changed:
+        checks.append((SETTINGS, changed["settings"], "file"))
+    if "codex_skill" in changed:
+        checks.append((CODEX_SKILLS / "sync", changed["codex_skill"], "symlink"))
+    for path, state, expected_kind in checks:
+        expected = state.get("applied_sha256")
+        if expected_kind == "file":
+            actual = sha256_file(path) if path.is_file() else None
+        else:
+            actual = os.readlink(path) if path.is_symlink() else None
+        if actual != expected:
+            print(
+                f"{RED}refusing to revert {path}: it changed after Sync installed it{RST}",
+                file=sys.stderr,
+            )
+            return 1
+    for path, state, _ in checks:
+        restore_path(path, state)
+        print(f"{GRN}restored{RST} {path}")
+    print(f"  from {latest}")
+    return 0
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(
+        prog="sync-install",
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    ap.add_argument("--apply", action="store_true", help="write the changes")
+    ap.add_argument("--revert", action="store_true", help="restore the latest backup")
+    args = ap.parse_args()
+
+    if args.revert:
+        return cmd_revert()
+
+    for f in (BIN / "sync", BIN / "sync-statusline"):
+        if not os.access(f, os.X_OK):
+            print(f"{YLW}making {f.name} executable{RST}")
+            if args.apply:
+                f.chmod(0o755)
+
+    settings = load_settings()
+    merged, changes = plan(settings)
+    codex_changes, codex_error = codex_link_state()
+    if codex_error:
+        print(f"{RED}{codex_error}{RST}", file=sys.stderr)
+        return 1
+    # Rendering the plan must not create the link before its pre-change state is
+    # captured in the transaction.
+    changes += link_codex_skill(False)
+
+    print(f"\n{CYN}Sync install{RST}  {DIM}{SETTINGS}{RST}\n")
+    if not changes:
+        print(f"  {GRN}already wired, nothing to do{RST}\n")
+        return 0
+    for c in changes:
+        print(f"  {c}")
+    show_untouched(settings)
+
+    if not args.apply:
+        print(f"\n  {YLW}dry run. Re-run with --apply to write.{RST}\n")
+        return 0
+
+    BACKUP_DIR.mkdir(parents=True, exist_ok=True)
+    backup_root = BACKUP_DIR / f"transaction-{timestamp()}"
+    backup_root.mkdir(mode=0o700)
+    changed: dict[str, dict[str, str]] = {}
+    transaction: dict[str, object] = {"version": 1, "changed": changed}
+    if merged != settings:
+        changed["settings"] = snapshot_path(SETTINGS, backup_root, "settings.json")
+    if codex_changes:
+        changed["codex_skill"] = snapshot_path(CODEX_SKILLS / "sync", backup_root, "codex-skill")
+    SETTINGS.parent.mkdir(parents=True, exist_ok=True)
+    SETTINGS.write_text(json.dumps(merged, indent=2) + "\n", encoding="utf-8")
+    if merged != settings:
+        changed["settings"]["applied_sha256"] = sha256_file(SETTINGS)
+    if codex_changes:
+        link_codex_skill(True)
+        changed["codex_skill"]["applied_sha256"] = os.readlink(CODEX_SKILLS / "sync")
+    manifest = BACKUP_DIR / f"transaction-{timestamp()}.json"
+    manifest.write_text(json.dumps(transaction, indent=2) + "\n", encoding="utf-8")
+    manifest.chmod(0o600)
+    print(f"\n  {DIM}transaction -> {manifest}{RST}")
+    print(f"  {GRN}written{RST}")
+    print("\n  Restart Claude Code for the statusline and hook to load.")
+    print(f"  Undo with: {DIM}sync-install --revert{RST}\n")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

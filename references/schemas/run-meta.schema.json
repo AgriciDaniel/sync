@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sync.local/schemas/run-meta.schema.json",
+  "title": "Sync run metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "run_id", "slug", "opened_at", "project"],
+  "properties": {
+    "version": {"const": 2},
+    "run_id": {"type": "string", "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){0,95}$"},
+    "slug": {"type": "string", "minLength": 1},
+    "opened_at": {"type": "string", "minLength": 1},
+    "project": {"type": "string", "minLength": 1}
+  }
+}

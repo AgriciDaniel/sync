@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sync.local/schemas/outcome.schema.json",
+  "title": "Sync recorded outcome",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version", "at", "run_id", "project", "role", "source_pool", "pool",
+    "capacity_status", "route_fingerprint", "dispatch_fingerprint",
+    "dispatch_config_fingerprint", "dispatch_exit_code", "result_validation",
+    "executor_status", "wall_clock_s", "gate_status", "gate_passed", "outcome_status",
+    "triggers_fired", "notes"
+  ],
+  "properties": {
+    "version": {"const": 2},
+    "at": {"type": "string", "minLength": 1},
+    "run_id": {"type": "string", "minLength": 1},
+    "project": {"type": "string", "minLength": 1},
+    "role": {"type": "string", "minLength": 1},
+    "source_pool": {"type": ["string", "null"]},
+    "pool": {"type": "string", "minLength": 1},
+    "capacity_status": {"enum": ["not-claimed", "same-pool", "headroom-unverified", "eligible"]},
+    "route_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "dispatch_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "dispatch_config_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "dispatch_exit_code": {"type": "integer"},
+    "result_validation": {"enum": ["valid", "invalid", "not-produced"]},
+    "executor_status": {
+      "type": ["string", "null"],
+      "enum": ["completed", "blocked", "needs_clarification", null]
+    },
+    "wall_clock_s": {"type": "number", "minimum": 0},
+    "gate_status": {"enum": ["pass", "fail", "inconclusive"]},
+    "gate_passed": {"type": "boolean"},
+    "outcome_status": {"enum": ["success", "failed", "inconclusive"]},
+    "triggers_fired": {"type": "array", "items": {"type": "string"}},
+    "notes": {"type": "string"}
+  }
+}

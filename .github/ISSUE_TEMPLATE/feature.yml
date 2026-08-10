@@ -1,0 +1,33 @@
+name: Feature proposal
+description: Propose a scoped improvement with its evidence and verification path.
+title: "[proposal] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What operator problem is unresolved?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Which source, run, or repeated failure supports the proposal?
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification path
+      description: Which command or artifact would prove this works?
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Authorization and rollback boundary
+      description: What may change, what must not change, and how would it be reverted?
+    validations:
+      required: true
