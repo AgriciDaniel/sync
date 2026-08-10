@@ -59,7 +59,7 @@
       ],
       "exit_code": 0,
       "name": "pytest-full",
-      "output_sha256": "a5f89b763dddeb15548fed5019ff19cac5dca7a7085523408699ebc2ae29f306"
+      "output_sha256": "e7d08b6190f5484dd4c861d0c3a92ac1d460e69f39e51c792856bf167a9d9ccb"
     },
     {
       "argv": [
@@ -76,15 +76,15 @@
         "scripts/build_demo_vault.py",
         "--verify-determinism",
         "--out-dir",
-        "<home>/.local/state/codex-desktop/tmp/sync-market-demo-sc5qwerv"
+        "<home>/.local/state/codex-desktop/tmp/sync-market-demo-oidabs22"
       ],
       "exit_code": 0,
       "name": "demo-byte-tree",
-      "output_sha256": "d949b04df4a8b79d4328674ef92d5dee5e86108ec5f140ee910b662993949d0f"
+      "output_sha256": "870fee5c92e584569a50609f760d82b208b9ea54335954f874b191b9bc60906c"
     }
   ],
   "schema": "sync-market-ready-evidence/1",
   "scope": "Local source-bound acceptance evidence. It does not claim that hosted CI, publication, or deployment ran.",
-  "source_tree_sha256": "a6ac84454adf846585330110d51071f46bbb9734118e2ffb7ee4d4a1af12e68b",
-  "verified_at": "2026-08-10T17:54:15+00:00"
+  "source_tree_sha256": "a8e931f9e9812eade559f41286d4155de74e84ef3c7f19b75fff15258844f723",
+  "verified_at": "2026-08-10T19:00:00+00:00"
 }
