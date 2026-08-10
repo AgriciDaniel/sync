@@ -38,6 +38,8 @@ def included_files(repo: Path) -> list[Path]:
             continue
         if any(part in EXCLUDED_PARTS for part in rel.parts):
             continue
+        if any(part.endswith(".egg-info") for part in rel.parts):
+            continue
         if any(part.startswith(EXCLUDED_PREFIXES) for part in rel.parts):
             continue
         if path.is_symlink():

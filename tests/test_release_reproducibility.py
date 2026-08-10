@@ -12,6 +12,8 @@ from pathlib import Path
 
 import pytest
 
+from sync_brain.release_verification import source_tree_fingerprint
+
 
 REPO = Path(__file__).resolve().parent.parent
 PACKAGE_SCRIPT = REPO / "scripts" / "package_release.py"
@@ -47,6 +49,18 @@ def run_package(dist_dir: Path) -> subprocess.CompletedProcess[str]:
         env={**os.environ, "SOURCE_DATE_EPOCH": "315532800"},
         check=False,
     )
+
+
+def test_source_fingerprint_ignores_generated_package_metadata(tmp_path: Path) -> None:
+    source = tmp_path / "source.py"
+    source.write_text("value = 1\n", encoding="utf-8")
+    expected = source_tree_fingerprint(tmp_path)
+
+    metadata = tmp_path / "sync_brain.egg-info"
+    metadata.mkdir()
+    (metadata / "PKG-INFO").write_text("generated metadata\n", encoding="utf-8")
+
+    assert source_tree_fingerprint(tmp_path) == expected
 
 
 def test_custom_dist_dir_is_excluded_and_release_bytes_are_reproducible() -> None:
