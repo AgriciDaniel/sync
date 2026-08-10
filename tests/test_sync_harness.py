@@ -101,6 +101,19 @@ def project_gate_approval(project: Path) -> list[str]:
     ]
 
 
+def executable_project_gate_approval(project: Path) -> list[str]:
+    """Approve test-only execution when the host has no gate sandbox."""
+    return [*project_gate_approval(project), "--allow-unsandboxed-gates"]
+
+
+def usable_gate_sandbox() -> bool:
+    """Require a working sandbox, not merely an installed executable."""
+    return bool(
+        sys.platform.startswith("linux")
+        and load_harness().gate_sandbox_executable()
+    )
+
+
 def fake_codex(tmp_path: Path) -> tuple[Path, dict[str, str]]:
     fake_bin = tmp_path / "fake-bin"
     fake_bin.mkdir()
@@ -308,7 +321,7 @@ def test_gate_pass_fail_inconclusive_and_explicit_project_trust(tmp_path: Path) 
         *project_gate_approval(project),
     )
     assert no_run.returncode == 1 and "run-bound" in no_run.stderr
-    approved_args = project_gate_approval(project)
+    approved_args = executable_project_gate_approval(project)
     passed = call(tmp_path, "gate", "--run", run_id, *approved_args, cwd=project)
     assert passed.returncode == 0
 
@@ -328,7 +341,7 @@ def test_gate_pass_fail_inconclusive_and_explicit_project_trust(tmp_path: Path) 
             "gate",
             "--run",
             run_id,
-            *project_gate_approval(project),
+            *executable_project_gate_approval(project),
             cwd=project,
         ).returncode
         == 1
@@ -351,7 +364,7 @@ def test_gate_pass_fail_inconclusive_and_explicit_project_trust(tmp_path: Path) 
             "gate",
             "--run",
             run_id,
-            *project_gate_approval(project),
+            *executable_project_gate_approval(project),
             cwd=project,
         ).returncode
         == 3
@@ -386,7 +399,7 @@ def test_gate_hard_failure_stops_later_steps(tmp_path: Path) -> None:
         "gate",
         "--run",
         run_id,
-        *project_gate_approval(project),
+        *executable_project_gate_approval(project),
         cwd=project,
     )
     assert result.returncode == 1
@@ -395,7 +408,7 @@ def test_gate_hard_failure_stops_later_steps(tmp_path: Path) -> None:
 
 
 @pytest.mark.skipif(
-    not sys.platform.startswith("linux") or not shutil.which("bwrap"),
+    not usable_gate_sandbox(),
     reason="Bubblewrap gate sandbox is unavailable",
 )
 def test_gate_sandbox_scrubs_secrets_and_blocks_outside_writes(
@@ -680,7 +693,7 @@ def test_real_fake_dispatch_redacts_binds_gates_and_records(tmp_path: Path) -> N
         "gate",
         "--run",
         run_id,
-        *project_gate_approval(project),
+        *executable_project_gate_approval(project),
         cwd=project,
     )
     assert gated.returncode == 0, gated.stderr
@@ -778,7 +791,7 @@ def test_blocked_executor_cannot_be_recorded_as_success(tmp_path: Path) -> None:
         "gate",
         "--run",
         run_id,
-        *project_gate_approval(project),
+        *executable_project_gate_approval(project),
         cwd=project,
     )
     assert gated.returncode == 0, gated.stderr
@@ -815,7 +828,7 @@ def test_tampered_dispatch_and_pre_dispatch_verdict_are_rejected(
             "gate",
             "--run",
             run_id,
-            *project_gate_approval(project),
+            *executable_project_gate_approval(project),
             cwd=project,
         ).returncode
         == 0
