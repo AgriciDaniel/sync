@@ -1,11 +1,6 @@
 # Sync
 
-![Sync, Claude and Codex working through one evidence loop](assets/svg/sync-council-hero.svg)
-
-<p align="center"><strong>Sync is the local control plane for Claude Code and Codex.</strong><br>
-Route work by role. Share context on disk. Accept results only after commands pass.</p>
-
-<p align="center"><code>V1.0.1</code> · <code>PYTHON 3.11+</code> · <code>LOCAL FIRST</code> · <code>EVIDENCE GATED</code></p>
+![Sync is the local control plane for Claude Code and Codex](assets/png/sync-cover.png)
 
 Choose a role once. Sync binds the task to a harness, model, effort, and
 **billing pool**, moves the work through a shared run directory, and records the
