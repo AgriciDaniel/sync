@@ -2,14 +2,15 @@
 
 ![Sync, Claude and Codex working through one evidence loop](assets/svg/sync-council-hero.svg)
 
-<p align="center"><strong>Claude and Codex council orchestration, enforced rather than described.</strong></p>
+<p align="center"><strong>Sync is the local control plane for Claude Code and Codex.</strong><br>
+Route work by role. Share context on disk. Accept results only after commands pass.</p>
 
-<p align="center"><code>V1.0.0</code> · <code>PYTHON 3.11+</code> · <code>LOCAL FIRST</code> · <code>EVIDENCE GATED</code></p>
+<p align="center"><code>V1.0.1</code> · <code>PYTHON 3.11+</code> · <code>LOCAL FIRST</code> · <code>EVIDENCE GATED</code></p>
 
-Sync routes each piece of work to a role, binds that role to a harness, model,
-effort, and **billing pool**, runs it through a shared run directory on disk,
-gates it on executed commands, and records the outcome so routing policy can move
-on evidence instead of impression.
+Choose a role once. Sync binds the task to a harness, model, effort, and
+**billing pool**, moves the work through a shared run directory, and records the
+executed verdict. Routing policy can then evolve from evidence instead of
+impression.
 
 **Maturity: market-ready locally, with hosted CI required on the exact tagged
 release.** The market-ready audit is bound to an exact source-tree fingerprint,
@@ -194,7 +195,7 @@ structure, audit gate, and packaging come from Brainstein.
 Sync is an independent project. Claude is a trademark of Anthropic. Codex and
 OpenAI are trademarks of OpenAI. Their names identify compatible execution
 lanes and do not imply partnership, sponsorship, or endorsement. The visual
-above uses original project icons rather than vendor logos.
+above uses the supplied vendor marks only to identify those compatible lanes.
 
 ## Honest gaps
 

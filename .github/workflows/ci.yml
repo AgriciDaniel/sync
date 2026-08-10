@@ -41,4 +41,4 @@ jobs:
       - name: Release package and audit
         run: |
           python scripts/audit_brain.py --require market-ready --json
-          python scripts/package_release.py --version 1.0.0 --release-type market-ready
+          python scripts/package_release.py --version 1.0.1 --release-type market-ready
