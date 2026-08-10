@@ -5,14 +5,14 @@
   },
   "metadata": {
     "description": "Sync template and skill layer",
-    "version": "0.1.0"
+    "version": "1.0.0"
   },
   "plugins": [
     {
       "name": "sync-brain",
       "source": "./",
       "description": "Obsidian brain for Claude and Codex council orchestration: task routing across billing pools, artifact-mediated coordination, ground-truth verification gates, quota and cost measurement, and policy evolution from recorded outcomes.",
-      "version": "0.1.0",
+      "version": "1.0.0",
       "author": {
         "name": "Daniel Agrici"
       },
@@ -20,14 +20,20 @@
       "license": "Proprietary",
       "category": "sync",
       "tags": [
+        "claude-code",
+        "codex",
+        "agent-orchestration",
         "obsidian",
-        "brain",
-        "sync"
+        "verification",
+        "local-first"
       ],
       "keywords": [
         "sync-brain",
-        "sync",
-        "obsidian"
+        "claude-code",
+        "codex",
+        "agent-orchestration",
+        "obsidian",
+        "verification"
       ]
     }
   ]

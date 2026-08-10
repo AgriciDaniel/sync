@@ -32,7 +32,7 @@
 - [ ] `python scripts/build_demo_vault.py --verify-determinism`
 - [ ] `python scripts/verify_market_ready.py --write-evidence`
 - [ ] `python scripts/audit_brain.py --require market-ready --json`
-- [ ] `python scripts/package_release.py --version 0.1.0 --release-type market-ready`
+- [ ] `python scripts/package_release.py --version 1.0.0 --release-type market-ready`
 - [ ] No secrets, private client data, or local absolute paths in artifacts.
 - [ ] Market-ready release is blocked unless audit score is at least 90 with no critical failures.
 - [ ] `references/adapter-manifest.json` names real schemas, importer paths,

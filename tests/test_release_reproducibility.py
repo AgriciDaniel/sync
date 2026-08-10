@@ -37,7 +37,7 @@ def run_package(dist_dir: Path) -> subprocess.CompletedProcess[str]:
             sys.executable,
             str(PACKAGE_SCRIPT),
             "--version",
-            "0.1.0",
+            "1.0.0",
             "--dist-dir",
             str(dist_dir),
         ],
@@ -62,7 +62,7 @@ def test_custom_dist_dir_is_excluded_and_release_bytes_are_reproducible() -> Non
         second_bytes = {path.name: sha256(path) for path in tracked}
         assert second_bytes == first_bytes
 
-        source_zip = dist / "sync-brain-source-v0.1.0.zip"
+        source_zip = dist / "sync-brain-source-v1.0.0.zip"
         with zipfile.ZipFile(source_zip) as archive:
             names = archive.namelist()
             assert all(dist.name not in name for name in names)

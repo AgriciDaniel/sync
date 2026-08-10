@@ -38,5 +38,5 @@ runtimes that load project-level `AGENTS.md` instructions.
 python -m compileall scripts sync_brain tests
 python tests/test_pipeline.py
 python scripts/audit_brain.py --json
-python scripts/package_release.py --version 0.1.0
+python scripts/package_release.py --version 1.0.0
 ```

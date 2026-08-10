@@ -2,7 +2,7 @@
 
 ## Supported Version
 
-The private `0.1.x` line is currently supported. Older snapshots are not
+The private `1.x` line is currently supported. Older snapshots are not
 maintained.
 
 ## Reporting

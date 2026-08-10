@@ -101,7 +101,7 @@ def test_pipeline() -> None:
             PY,
             "scripts/package_release.py",
             "--version",
-            "0.1.0",
+            "1.0.0",
             "--release-type",
             "market-ready",
         ],
@@ -124,7 +124,7 @@ def test_pipeline() -> None:
     else:
         assert gated.returncode != 0
         assert "market-ready release blocked" in gated.stderr
-    run(["scripts/package_release.py", "--version", "0.1.0"])
+    run(["scripts/package_release.py", "--version", "1.0.0"])
     assert (REPO / "dist" / "RELEASE_MANIFEST.json").exists()
     with tempfile.TemporaryDirectory(prefix="sync-brain-install-") as tmp:
         env = {"SYNC_BRAIN_INSTALL_HOME": tmp}

@@ -4,14 +4,14 @@
 
 <p align="center"><strong>Claude and Codex council orchestration, enforced rather than described.</strong></p>
 
-<p align="center"><code>PRIVATE PREVIEW</code> · <code>PYTHON 3.11+</code> · <code>LOCAL FIRST</code> · <code>EVIDENCE GATED</code></p>
+<p align="center"><code>V1.0.0</code> · <code>PYTHON 3.11+</code> · <code>LOCAL FIRST</code> · <code>EVIDENCE GATED</code></p>
 
 Sync routes each piece of work to a role, binds that role to a harness, model,
 effort, and **billing pool**, runs it through a shared run directory on disk,
 gates it on executed commands, and records the outcome so routing policy can move
 on evidence instead of impression.
 
-**Maturity: market-ready locally, with hosted CI still required before a tagged
+**Maturity: market-ready locally, with hosted CI required on the exact tagged
 release.** The market-ready audit is bound to an exact source-tree fingerprint,
 so any source change invalidates its evidence until the acceptance suite runs
 again. The controls in `bin/` have hermetic regression
@@ -208,10 +208,8 @@ above uses original project icons rather than vendor logos.
   model generations. They should be re-derived from this operator's own ledger.
 - **`sync measure` cannot read live Claude quota.** That is only exposed to the
   statusline inside a session.
-- **The final distribution license is an owner decision.** The audit refuses
-  market-ready status while `LICENSE` and package metadata remain placeholders.
-- **Hosted CI has not run in this workspace.** Local source-bound acceptance
-  evidence is distinct from a green GitHub Actions run.
+- **Hosted CI and local evidence are separate gates.** A release must target the
+  exact revision that passed both checks.
 - **The public release surface permits fixture-only `.raw` material.** Client
   raw material remains forbidden. The release scanner enforces the two reviewed
   fixture roots and rejects any other raw path.

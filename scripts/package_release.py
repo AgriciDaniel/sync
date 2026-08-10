@@ -175,7 +175,7 @@ def enforce_market_ready_gate() -> None:
 def normalize_version(value: str) -> str:
     version = value.strip().removeprefix("v")
     if not re.fullmatch(r"\d+\.\d+\.\d+", version):
-        raise SystemExit("ERROR: --version must look like 0.1.0")
+        raise SystemExit("ERROR: --version must look like 1.0.0")
     return version
 
 

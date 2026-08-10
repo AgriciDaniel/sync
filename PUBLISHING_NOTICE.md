@@ -55,7 +55,7 @@ release scan passes. The rendered Quartz site still removes operational ledgers.
 1. Run `python scripts/lint_vault.py --vault examples/sample-vault`.
 2. Run `python scripts/verify_market_ready.py --write-evidence`.
 3. Run `python scripts/audit_brain.py --require market-ready --json`.
-4. Build with `python scripts/package_release.py --version 0.1.0 --release-type market-ready`.
+4. Build with `python scripts/package_release.py --version 1.0.0 --release-type market-ready`.
 5. Confirm every packaged `.raw` entry is under a reviewed fixture root.
 6. Run `node site/scripts/sanitize-public.mjs` after a Quartz build.
 7. Confirm repository visibility and Pages visibility separately.
