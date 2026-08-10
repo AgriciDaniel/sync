@@ -16,7 +16,7 @@ dependencies = []
 test = [
   "detect-secrets>=1.5,<2",
   "jsonschema>=4.23,<5",
-  "mypy>=1.17,<2",
+  "mypy>=1.17,<3",
   "pytest>=8,<10",
   "ruff==0.16.2",
 ]
